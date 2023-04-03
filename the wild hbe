@@ -1,0 +1,39 @@
+local UILibrary = loadstring(game:HttpGet("https://pastebin.com/raw/Sn2aSgJW%22))();
+local Objects = UILibrary.CreateWindow("Metatable HBE")
+local mt = getrawmetatable(game)
+local old = mt.index
+setreadonly(mt, false)
+mt.index = newcclosure(function(self, k)
+    if not checkcaller() and k == "Size" and self.Name == "HumanoidRootPart" then
+        return Vector3.new(2, 2, 1)
+    end
+    return old(self, k)
+end)
+setreadonly(mt, true)
+
+game:GetService("RunService").Stepped:Connect(function()
+    local Size = tonumber(Objects.SizeInput.Text) or 7
+
+    for _, v in next, game.Players:GetPlayers() do
+        if v.Name ~= game.Players.LocalPlayer.Name and v.Character then
+            pcall(function()
+                if UILibrary.GetEnabled() == true then
+                   if v.Character.Humanoid.Health > 0 then
+                        v.Character.HumanoidRootPart.Size = Vector3.new(Size, Size, Size)
+                        v.Character.HumanoidRootPart.CanCollide = false
+                        v.Character.HumanoidRootPart.Transparency = 0.7
+                        v.Character.HumanoidRootPart.Color = Color3.fromRGB(61, 68, 255)
+                   else
+                        v.Character.HumanoidRootPart.Size = Vector3.new(0.1, 0.1, 0.1)
+                        v.Character.HumanoidRootPart.CanCollide = false
+                        v.Character.HumanoidRootPart.Transparency = 1
+                   end
+                else
+                    v.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+                    v.Character.HumanoidRootPart.CanCollide = false
+                    v.Character.HumanoidRootPart.Transparency = 1
+                end
+            end)
+        end
+    end
+end)
